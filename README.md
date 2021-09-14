@@ -1,23 +1,30 @@
 <!-- BEGIN_TF_DOCS -->
-[![Tests](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml)
+[![Tests](https://github.com/netascode/terraform-aci-port-channel-policy/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-port-channel-policy/actions/workflows/test.yml)
 
-# Terraform ACI Scaffolding Module
+# Terraform ACI Port Channel Policy Module
 
-Description
+Manages ACI Port Channel Policy
 
 Location in GUI:
-`Tenants` » `XXX`
+`Fabric` » `Access Policies` » `Policies` » `Interface` » `Port Channel`
 
 ## Examples
 
 ```hcl
-module "aci_scaffolding" {
-  source  = "netascode/scaffolding/aci"
+module "aci_port_channel_policy" {
+  source  = "netascode/port-channel-policy/aci"
   version = ">= 0.0.1"
 
-  name        = "ABC"
-  alias       = "ABC-ALIAS"
-  description = "My Description"
+  name                 = "LACP-ACTIVE"
+  mode                 = "active"
+  min_links            = 2
+  max_links            = 10
+  suspend_individual   = false
+  graceful_convergence = false
+  fast_select_standby  = false
+  load_defer           = true
+  symmetric_hash       = true
+  hash_key             = "src-ip"
 }
 
 ```
@@ -39,20 +46,28 @@ module "aci_scaffolding" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | Tenant name. | `string` | n/a | yes |
-| <a name="input_alias"></a> [alias](#input\_alias) | Tenant alias. | `string` | `""` | no |
-| <a name="input_description"></a> [description](#input\_description) | Tenant description. | `string` | `""` | no |
+| <a name="input_name"></a> [name](#input\_name) | Port channel policy name. | `string` | n/a | yes |
+| <a name="input_mode"></a> [mode](#input\_mode) | Mode. Choices: `off`, `active`, `passive`, `mac-pin`, `mac-pin-nicload`. | `string` | n/a | yes |
+| <a name="input_min_links"></a> [min\_links](#input\_min\_links) | Minimum links. Minimum value: 1. Maximum value: 16. | `number` | `1` | no |
+| <a name="input_max_links"></a> [max\_links](#input\_max\_links) | Maximum links. Minimum value: 1. Maximum value: 16. | `number` | `16` | no |
+| <a name="input_suspend_individual"></a> [suspend\_individual](#input\_suspend\_individual) | Suspend individual. | `bool` | `true` | no |
+| <a name="input_graceful_convergence"></a> [graceful\_convergence](#input\_graceful\_convergence) | Graceful convergence. | `bool` | `true` | no |
+| <a name="input_fast_select_standby"></a> [fast\_select\_standby](#input\_fast\_select\_standby) | Fast select standby. | `bool` | `true` | no |
+| <a name="input_load_defer"></a> [load\_defer](#input\_load\_defer) | Load defer. | `bool` | `false` | no |
+| <a name="input_symmetric_hash"></a> [symmetric\_hash](#input\_symmetric\_hash) | Symmetric hash. | `bool` | `false` | no |
+| <a name="input_hash_key"></a> [hash\_key](#input\_hash\_key) | Hash key. Choices: `, `src-ip`, `dst-ip`, `l4-src-port`, `l4-dst-port`.` | `string` | `""` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `fvTenant` object. |
-| <a name="output_name"></a> [name](#output\_name) | Tenant name. |
+| <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `lacpLagPol` object. |
+| <a name="output_name"></a> [name](#output\_name) | Port channel policy name. |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aci_rest.fvTenant](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.l2LoadBalancePol](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.lacpLagPol](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
 <!-- END_TF_DOCS -->

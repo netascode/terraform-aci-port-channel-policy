@@ -14,35 +14,70 @@ terraform {
 module "main" {
   source = "../.."
 
-  name        = "ABC"
-  alias       = "ALIAS"
-  description = "DESCR"
+  name                 = "LACP-ACTIVE"
+  mode                 = "active"
+  min_links            = 2
+  max_links            = 10
+  suspend_individual   = false
+  graceful_convergence = false
+  fast_select_standby  = false
+  load_defer           = true
+  symmetric_hash       = true
+  hash_key             = "src-ip"
 }
 
-data "aci_rest" "fvTenant" {
-  dn = "uni/tn-ABC"
+data "aci_rest" "lacpLagPol" {
+  dn = "uni/infra/lacplagp-${module.main.name}"
 
   depends_on = [module.main]
 }
 
-resource "test_assertions" "fvTenant" {
-  component = "fvTenant"
+resource "test_assertions" "lacpLagPol" {
+  component = "lacpLagPol"
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fvTenant.content.name
-    want        = "ABC"
+    got         = data.aci_rest.lacpLagPol.content.name
+    want        = module.main.name
   }
 
-  equal "nameAlias" {
-    description = "nameAlias"
-    got         = data.aci_rest.fvTenant.content.nameAlias
-    want        = "ALIAS"
+  equal "mode" {
+    description = "mode"
+    got         = data.aci_rest.lacpLagPol.content.mode
+    want        = "active"
   }
 
-  equal "descr" {
-    description = "descr"
-    got         = data.aci_rest.fvTenant.content.descr
-    want        = "DESCR"
+  equal "minLinks" {
+    description = "minLinks"
+    got         = data.aci_rest.lacpLagPol.content.minLinks
+    want        = "2"
+  }
+
+  equal "maxLinks" {
+    description = "maxLinks"
+    got         = data.aci_rest.lacpLagPol.content.maxLinks
+    want        = "10"
+  }
+
+  equal "ctrl" {
+    description = "ctrl"
+    got         = data.aci_rest.lacpLagPol.content.ctrl
+    want        = "load-defer,symmetric-hash"
+  }
+}
+
+data "aci_rest" "l2LoadBalancePol" {
+  dn = "${data.aci_rest.lacpLagPol.id}/loadbalanceP"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "l2LoadBalancePol" {
+  component = "l2LoadBalancePol"
+
+  equal "hashFields" {
+    description = "hashFields"
+    got         = data.aci_rest.l2LoadBalancePol.content.hashFields
+    want        = "src-ip"
   }
 }
