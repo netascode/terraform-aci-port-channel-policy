@@ -20,7 +20,7 @@ resource "aci_rest" "lacpLagPol" {
 
 resource "aci_rest" "l2LoadBalancePol" {
   count      = var.symmetric_hash == true ? 1 : 0
-  dn         = "${aci_rest.lacpLagPol.id}/loadbalanceP"
+  dn         = "${aci_rest.lacpLagPol.dn}/loadbalanceP"
   class_name = "l2LoadBalancePol"
   content = {
     hashFields = var.hash_key
