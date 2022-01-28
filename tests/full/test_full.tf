@@ -5,8 +5,8 @@ terraform {
     }
 
     aci = {
-      source  = "netascode/aci"
-      version = ">=0.2.0"
+      source  = "CiscoDevNet/aci"
+      version = ">=2.0.0"
     }
   }
 }
@@ -26,7 +26,7 @@ module "main" {
   hash_key             = "src-ip"
 }
 
-data "aci_rest" "lacpLagPol" {
+data "aci_rest_managed" "lacpLagPol" {
   dn = "uni/infra/lacplagp-${module.main.name}"
 
   depends_on = [module.main]
@@ -37,37 +37,37 @@ resource "test_assertions" "lacpLagPol" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.lacpLagPol.content.name
+    got         = data.aci_rest_managed.lacpLagPol.content.name
     want        = module.main.name
   }
 
   equal "mode" {
     description = "mode"
-    got         = data.aci_rest.lacpLagPol.content.mode
+    got         = data.aci_rest_managed.lacpLagPol.content.mode
     want        = "active"
   }
 
   equal "minLinks" {
     description = "minLinks"
-    got         = data.aci_rest.lacpLagPol.content.minLinks
+    got         = data.aci_rest_managed.lacpLagPol.content.minLinks
     want        = "2"
   }
 
   equal "maxLinks" {
     description = "maxLinks"
-    got         = data.aci_rest.lacpLagPol.content.maxLinks
+    got         = data.aci_rest_managed.lacpLagPol.content.maxLinks
     want        = "10"
   }
 
   equal "ctrl" {
     description = "ctrl"
-    got         = data.aci_rest.lacpLagPol.content.ctrl
+    got         = data.aci_rest_managed.lacpLagPol.content.ctrl
     want        = "load-defer,symmetric-hash"
   }
 }
 
-data "aci_rest" "l2LoadBalancePol" {
-  dn = "${data.aci_rest.lacpLagPol.id}/loadbalanceP"
+data "aci_rest_managed" "l2LoadBalancePol" {
+  dn = "${data.aci_rest_managed.lacpLagPol.id}/loadbalanceP"
 
   depends_on = [module.main]
 }
@@ -77,7 +77,7 @@ resource "test_assertions" "l2LoadBalancePol" {
 
   equal "hashFields" {
     description = "hashFields"
-    got         = data.aci_rest.l2LoadBalancePol.content.hashFields
+    got         = data.aci_rest_managed.l2LoadBalancePol.content.hashFields
     want        = "src-ip"
   }
 }

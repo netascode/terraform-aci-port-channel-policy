@@ -6,7 +6,7 @@ locals {
   ctrl                 = concat(local.suspend_individual, var.symmetric_hash == true ? ["symmetric-hash"] : [])
 }
 
-resource "aci_rest" "lacpLagPol" {
+resource "aci_rest_managed" "lacpLagPol" {
   dn         = "uni/infra/lacplagp-${var.name}"
   class_name = "lacpLagPol"
   content = {
@@ -18,9 +18,9 @@ resource "aci_rest" "lacpLagPol" {
   }
 }
 
-resource "aci_rest" "l2LoadBalancePol" {
+resource "aci_rest_managed" "l2LoadBalancePol" {
   count      = var.symmetric_hash == true ? 1 : 0
-  dn         = "${aci_rest.lacpLagPol.dn}/loadbalanceP"
+  dn         = "${aci_rest_managed.lacpLagPol.dn}/loadbalanceP"
   class_name = "l2LoadBalancePol"
   content = {
     hashFields = var.hash_key

@@ -13,7 +13,7 @@ Location in GUI:
 ```hcl
 module "aci_port_channel_policy" {
   source  = "netascode/port-channel-policy/aci"
-  version = ">= 0.0.1"
+  version = ">= 0.1.0"
 
   name                 = "LACP-ACTIVE"
   mode                 = "active"
@@ -26,7 +26,6 @@ module "aci_port_channel_policy" {
   symmetric_hash       = true
   hash_key             = "src-ip"
 }
-
 ```
 
 ## Requirements
@@ -34,13 +33,13 @@ module "aci_port_channel_policy" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aci"></a> [aci](#requirement\_aci) | >= 0.2.0 |
+| <a name="requirement_aci"></a> [aci](#requirement\_aci) | >= 2.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aci"></a> [aci](#provider\_aci) | >= 0.2.0 |
+| <a name="provider_aci"></a> [aci](#provider\_aci) | >= 2.0.0 |
 
 ## Inputs
 
@@ -68,6 +67,6 @@ module "aci_port_channel_policy" {
 
 | Name | Type |
 |------|------|
-| [aci_rest.l2LoadBalancePol](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
-| [aci_rest.lacpLagPol](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest_managed.l2LoadBalancePol](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
+| [aci_rest_managed.lacpLagPol](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 <!-- END_TF_DOCS -->
